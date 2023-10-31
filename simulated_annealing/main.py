@@ -1,50 +1,50 @@
 import math
-
-import numpy as np
 import random
 import calculate_value as cal
+import sys
 
-# TODO dodac ograniczenie zeby nie wyjsc poza przedzial
-def random_neighbour(x, tick): # na sztywno na razie
+# temperatura, wartosc przy alfa(t), k , M, przedzial, ktora funkcja
+T = float(sys.argv[1])
+ALFA_T = float(sys.argv[2])
+K = float(sys.argv[3])
+M = int(sys.argv[4])
+LEFT = float(sys.argv[5])
+RIGHT = float(sys.argv[6])
+FUNC = sys.argv[7]
+def random_neighbour(x, tick):
     change = random.uniform(-tick, tick)
-    if x + change > 150 or x + change < - 150:
+    if x + change > RIGHT or x + change < LEFT:
         return x - change
     else:
         return x + change
-# na razie na sztywno wszystko, numery funkcji i przedziały itd wziete z tego pdfa
-# 1 funckaj to na przedziale [-150, 150]
-# a funkcja 2 to ta z sinusem i na przedziale [-1, 2]
+
 
 
 # 1. inicjalizacja początkowej wartości
-# myslę, że może to być losowanie po prostu x z zakresu na jakim sprawdzamy funkcje
 
-x_value = random.uniform(-150, 150)
+x_value = random.uniform(LEFT, RIGHT)
 x_next = 0
 
-# 2. inicjalizacja temperatury
-# to raczej trzeba bedzie po prostu dobrac i poeksperymentowac
-t = 500
-k=0.1
+# 2. inicjalizacja temperatury to trzeba dobrac (podaje sie w parametrach skryptu)
+# wartosc k tez sie podaje w parametrach
 
-# 3. kryterium stopu, z zadania się weźmie (mozna podac po prostu)
-stop = 3000
+
+# 3. kryterium stopu, z zadania się weźmie (mozna podac po prostu) - w parametrach
 
 delta_cost = 0
-
 x_best = x_value
 
-for i in range(0, stop):
+for i in range(0, M):
     x_next = random_neighbour(x_value, 15)
-    delta_cost = cal.function_value(x_next, "1") - cal.function_value(x_value, "1") # na sztywno 1 funckja na razie wszedzie
+    delta_cost = cal.function_value(x_next, FUNC) - cal.function_value(x_value, FUNC)
     if delta_cost > 0: # szukam wiekszej wartoscci funkcji kosztu
         x_value = x_next
     else:
         x = random.random() # returns random float between 0 and 1
-        if x < math.exp(-delta_cost / (k * t)):
+        if x < math.exp(-delta_cost / (K * T)):
             x_value = x_next
-    t = 0.999*t
-    if cal.function_value(x_best, "1") - cal.function_value(x_value, "1") < 0:
+    T = ALFA_T * T
+    if cal.function_value(x_best, FUNC) - cal.function_value(x_value, FUNC) < 0:
         x_best = x_value
         print(x_best)
 
