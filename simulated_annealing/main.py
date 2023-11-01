@@ -21,6 +21,7 @@ FUNC = sys.argv[7]              # numer funkcji
 #         return x + change
 
 
+# Losowanie sąsiada
 def random_neighbour(x, tick):
     change = random.uniform(-tick, tick)
     x_neighbor = x + change
@@ -30,8 +31,14 @@ def random_neighbour(x, tick):
     return x_neighbor
 
 
-def calculate_tick(temperature, k, iterations):
-    return temperature / (k * iterations)
+# Obliczanie rozmiaru peturbacji
+def calculate_tick(temperature, scale):
+    return temperature * scale
+
+# o co cho
+# 2. inicjalizacja temperatury to trzeba dobrac (podaje sie w parametrach skryptu)
+# wartosc k tez sie podaje w parametrach
+# 3. kryterium stopu, z zadania się weźmie (mozna podac po prostu) - w parametrach
 
 
 # Inicjalizacja początkowych wartości
@@ -41,8 +48,8 @@ delta_cost = 0
 x_best = x_value
 
 for i in range(0, M):
-    # tick = calculate_tick(T, K, M)
-    x_next = random_neighbour(x_value, 15)
+    tick = calculate_tick(T, 0.1)
+    x_next = random_neighbour(x_value, tick)
     delta_cost = cal.function_value(x_next, FUNC) - cal.function_value(x_value, FUNC)
 
     if delta_cost > 0:            # szukanie większej wartości funkcji kosztu
