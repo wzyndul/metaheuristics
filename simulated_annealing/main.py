@@ -31,10 +31,6 @@ def random_neighbour(x, tick):
     return x_neighbor
 
 
-# Obliczanie rozmiaru peturbacji
-def calculate_tick(temperature, scale):
-    return temperature * scale
-
 # o co cho
 # 2. inicjalizacja temperatury to trzeba dobrac (podaje sie w parametrach skryptu)
 # wartosc k tez sie podaje w parametrach
@@ -48,8 +44,7 @@ delta_cost = 0
 x_best = x_value
 
 for i in range(0, M):
-    tick = calculate_tick(T, 0.1)
-    x_next = random_neighbour(x_value, tick)
+    x_next = random_neighbour(x_value, 2*T)
     delta_cost = cal.function_value(x_next, FUNC) - cal.function_value(x_value, FUNC)
 
     if delta_cost > 0:            # szukanie większej wartości funkcji kosztu
