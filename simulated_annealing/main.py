@@ -31,17 +31,12 @@ def random_neighbour(x, tick):
     return x_neighbor
 
 
-# o co cho
-# 2. inicjalizacja temperatury to trzeba dobrac (podaje sie w parametrach skryptu)
-# wartosc k tez sie podaje w parametrach
-# 3. kryterium stopu, z zadania się weźmie (mozna podac po prostu) - w parametrach
-
-
 # Inicjalizacja początkowych wartości
 x_value = random.uniform(LEFT, RIGHT)
 x_next = 0
 delta_cost = 0
 x_best = x_value
+nr = 0
 
 for i in range(0, M):
     x_next = random_neighbour(x_value, 2*T)
@@ -56,11 +51,13 @@ for i in range(0, M):
 
     T = ALFA_T * T
     if cal.function_value(x_best, FUNC) - cal.function_value(x_value, FUNC) < 0:
+        nr += 1
         x_best = x_value
         function_val = cal.function_value(x_best, FUNC)
         print(f"Najlepszy punkt: {x_best}, wartość funkcji: {function_val}")
         print(f"Temperatura: {T}")
         print(f"Różnica kosztów rozwiązań: {delta_cost}")
-        print(f"Krok: {i}\n")
+        print(f"Iteracja: {i}")
+        print(f"Liczba poprawek: {nr}\n")
 
 
