@@ -24,4 +24,3 @@ def function_value(x, function_type):
     else:
         print("Podano błędny numer funkcji")
     return fx
-
