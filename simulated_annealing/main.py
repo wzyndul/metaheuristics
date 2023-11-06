@@ -24,6 +24,8 @@ x_next = 0
 delta_cost = 0
 x_best = x_value
 nr = 0
+dupa = 0
+ile = 0
 
 for i in range(0, M):
     x_next = random_neighbour(x_value)
@@ -32,16 +34,14 @@ for i in range(0, M):
     if delta_cost > 0:  # szukanie większej wartości funkcji kosztu
         x_value = x_next
     else:
-        if random.random() < np.exp(-delta_cost / (K * T)):
+        if random.random() < np.exp(delta_cost / (K * T)):
             x_value = x_next
 
     if cal.function_value(x_best, FUNC) - cal.function_value(x_value, FUNC) < 0:
         nr += 1
         x_best = x_value
-        function_val = cal.function_value(x_best, FUNC)
     T *= ALFA_T
-print(f"Najlepszy punkt: {x_best}, wartość funkcji: {function_val}")
+print(f"Najlepszy punkt: {x_best}, wartość funkcji: {cal.function_value(x_best, FUNC)}")
 print(f"Temperatura: {T}")
 print(f"Różnica kosztów rozwiązań: {delta_cost}")
-print(f"Iteracja: {i}")
 print(f"Liczba poprawek: {nr}\n")
