@@ -42,6 +42,5 @@ for i in range(0, M):
         x_best = x_value
     T *= ALFA_T
 print(f"Najlepszy punkt: {x_best}, wartość funkcji: {cal.function_value(x_best, FUNC)}")
-print(f"Temperatura: {T}")
-print(f"Różnica kosztów rozwiązań: {delta_cost}")
+print(f"Temperatura końcowa: {T}")
 print(f"Liczba poprawek: {nr}\n")
