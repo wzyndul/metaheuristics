@@ -24,8 +24,6 @@ x_next = 0
 delta_cost = 0
 x_best = x_value
 nr = 0
-dupa = 0
-ile = 0
 
 for i in range(0, M):
     x_next = random_neighbour(x_value)
