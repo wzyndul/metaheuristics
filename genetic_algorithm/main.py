@@ -41,8 +41,8 @@ def roulette_selection(population, number_selected):
     for i in range(0, number_selected):
         sections.append([i, summ, summ + probability[i]])
         summ += probability[i]
-    #TODO tutaj slajd 39 dalej implemetacja ale troche nie czaje
-
+    #TODO tutaj slajd 39 dalej implemetacja ale troche nie czaje bo teraz jakby zawsze lecimy od indeksu 0 do n
+    # i to nie koniecznie sa najwieksze prawdopodnienstwa a to powinno byc losowanie a nie wybieranie po kolei
 def single_point_crossing():
     pass
 
