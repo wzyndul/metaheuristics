@@ -34,23 +34,77 @@ def set_probability_in_population(population):
         probability.append(calculate_adaptation(individual)/adaptation_sum)
     return probability
 
-def roulette_selection(population, number_selected):
+
+def roulette_selection(population, number_of_parents):
     probability = set_probability_in_population(population)
     sections = []
     summ = 0
-    for i in range(0, number_selected):
+
+    # Tworzymy przedziały dla każdego osobnika w populacji
+    for i in range(len(population)):
         sections.append([i, summ, summ + probability[i]])
         summ += probability[i]
-    #TODO tutaj slajd 39 dalej implemetacja ale troche nie czaje bo teraz jakby zawsze lecimy od indeksu 0 do n
-    # i to nie koniecznie sa najwieksze prawdopodnienstwa a to powinno byc losowanie a nie wybieranie po kolei
-def single_point_crossing():
-    pass
 
-def even_crossbreedingg():
-    pass
+    chosen_individuals = []
+
+    # Wybieramy osobniki na podstawie ruletki
+    for _ in range(number_of_parents):
+        random_numer = random.uniform(0, 1)
+        for section in sections:
+            if section[1] < random_numer <= section[2]:
+                chosen_individuals.append(population.pop([section[0]]))
+                # robie popa, zeby usunac z popualcji tego osobniak, zeby przypadkiem nei wybrac go dwa razy w metodzie ruletki
+                #TODO still nie wiem do konca jak chce zrobic to wybieranie rodzicow w sensie ilu ich itd
+                # TODO ale chyba po prostu krzyzowanie i powstaje po 2 dzieci i gitara jest
+
+                break
+
+    return chosen_individuals
+
+#todo pamietaj o tym!!!!
+# Jeśli prawdopodobieństwo krzyżowania wynosi 1.0, to krzyżowanie będzie miało miejsce za każdym razem podczas
+# tworzenia potomstwa. Z drugiej strony, jeśli prawdopodobieństwo krzyżowania wynosi 0.0,
+# to krzyżowanie nie będzie miało miejsca, a potomstwo będzie identyczne z rodzicami.
+def single_point_crossing(parent_a, parent_b, crossover_probability):
+    if random.random() < crossover_probability:
+        children_a, children_b = [], []
+        crossing_point = random.randint(1, 7) # wykluczamy wybranie wszystkich genów z 1 rodzica, 7 bo i tak jest to excluded w rangu
+        for index in range(0, crossing_point):
+            children_a.append(parent_a[index])
+            children_b.append(parent_b[index])
+        for index in range(crossing_point, len(parent_a)):
+            children_a.append(parent_b[index])
+            children_b.append(parent_a[index])
+        return children_a, children_b
+    else:
+        return parent_a, parent_b # dzieci są takie same jak rodzice
+
+
+def two_point_crossing(parent_a, parent_b, crossover_probability):
+    if random.random() < crossover_probability:
+        children_a, children_b = [], []
+        while True:
+            number1 = random.randint(1, 7)
+            number2 = random.randint(1, 7)
+            if number1 != number2 and abs(number1 - number2) > 2: # liczby nie mogą być identyczne ani 2 miejsca od siebie (bo excluded) weic de facto 1 miejsce
+                break
+        for index in range(0, min(number1, number2)):
+            children_a.append(parent_a[index])
+            children_b.append(parent_b[index])
+
+        for index in range(min(number1, number2), max(number1, number2)):
+            children_a.append(parent_b[index])
+            children_b.append(parent_a[index])
+
+        for index in range(max(number1, number2), len(parent_a)):
+            children_a.append(parent_a[index])
+            children_b.append(parent_b[index])
+
+        return children_a, children_b
+    else:
+        return parent_a, parent_b  # dzieci są takie same jak rodzice
 
 def individual_mutation():
     pass
-# TODO chyba lepiej obiektowo wszystko machnac niz na tych tablciach leciec
 
 

@@ -1,0 +1,160 @@
+{
+  "items": [
+    {
+      "number": 1,
+      "name": "Toporek",
+      "weight": 32252,
+      "value": 68674
+    },
+    {
+      "number": 2,
+      "name": "Moneta z brązu",
+      "weight": 225790,
+      "value": 471010
+    },
+    {
+      "number": 3,
+      "name": "Korona",
+      "weight": 468164,
+      "value": 944620
+    },
+    {
+      "number": 4,
+      "name": "Diamentowy posążek",
+      "weight": 489494,
+      "value": 962094
+    },
+    {
+      "number": 5,
+      "name": "Szmaragdowy pas",
+      "weight": 35384,
+      "value": 78344
+    },
+    {
+      "number": 6,
+      "name": "Skamieliny",
+      "weight": 265590,
+      "value": 579152
+    },
+    {
+      "number": 7,
+      "name": "Złota moneta",
+      "weight": 497911,
+      "value": 902698
+    },
+    {
+      "number": 8,
+      "name": "Hełm",
+      "weight": 800493,
+      "value": 1686515
+    },
+    {
+      "number": 9,
+      "name": "Tusz",
+      "weight": 823576,
+      "value": 1688691
+    },
+    {
+      "number": 10,
+      "name": "Szkatułka",
+      "weight": 552202,
+      "value": 1056157
+    },
+    {
+      "number": 11,
+      "name": "Nóż",
+      "weight": 323618,
+      "value": 677562
+    },
+    {
+      "number": 12,
+      "name": "Długi miecz",
+      "weight": 382846,
+      "value": 833132
+    },
+    {
+      "number": 13,
+      "name": "Maska",
+      "weight": 44676,
+      "value": 99192
+    },
+    {
+      "number": 14,
+      "name": "Naszyjnik",
+      "weight": 169738,
+      "value": 376418
+    },
+    {
+      "number": 15,
+      "name": "Opalowa zawieszka",
+      "weight": 610876,
+      "value": 1253986
+    },
+    {
+      "number": 16,
+      "name": "Perły",
+      "weight": 854190,
+      "value": 1853562
+    },
+    {
+      "number": 17,
+      "name": "Kołczan",
+      "weight": 671123,
+      "value": 1320297
+    },
+    {
+      "number": 18,
+      "name": "Rubinowy pierścień",
+      "weight": 698180,
+      "value": 1301637
+    },
+    {
+      "number": 19,
+      "name": "Srebrna bransoletka",
+      "weight": 446517,
+      "value": 859835
+    },
+    {
+      "number": 20,
+      "name": "Czasomierz",
+      "weight": 909620,
+      "value": 1677534
+    },
+    {
+      "number": 21,
+      "name": "Mundur",
+      "weight": 904818,
+      "value": 1910501
+    },
+    {
+      "number": 22,
+      "name": "Trucizna",
+      "weight": 730061,
+      "value": 1528646
+    },
+    {
+      "number": 23,
+      "name": "Wełniany szal",
+      "weight": 931932,
+      "value": 1827477
+    },
+    {
+      "number": 24,
+      "name": "Kusza",
+      "weight": 952360,
+      "value": 2068204
+    },
+    {
+      "number": 25,
+      "name": "Stara księga",
+      "weight": 926023,
+      "value": 1746556
+    },
+    {
+      "number": 26,
+      "name": "Puchar z cynku",
+      "weight": 978724,
+      "value": 2100851
+    }
+  ]
+}
