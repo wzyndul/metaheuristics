@@ -41,7 +41,7 @@ class Individual:
         self.__probability = self.__weight / adaptation_sum
 
     def mutation(self):
-        random_bit = random.randint(0, self.__size)
+        random_bit = random.randint(0, self.__size - 1)
         self.__bits[random_bit] = 1 if self.__bits[random_bit] == 0 else 0
 
 

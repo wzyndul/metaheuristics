@@ -12,7 +12,7 @@ for x in range(NR_OF_EPOCHS):
     best_individual = population.get_best_individual()
     print(f"Epoch: {x} Best individual weight: {best_individual.get_weight()} Best individual val: {best_individual.get_cost()}")
     population.set_probability_in_population()
-    population.generate_individuals()
+    population.generate_children(CROSSOVER_PROBABILITY, MUTATION_PROBABILITY)
 
 
 

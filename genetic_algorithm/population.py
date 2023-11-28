@@ -42,7 +42,7 @@ class Population:
             children_a = Individual(self.__backpack_size, self.__max_weight)
             children_b = Individual(self.__backpack_size, self.__max_weight)
             crossing_point = random.randint(1,
-                                            self.__backpack_size - 1)  # wykluczamy wybranie wszystkich genów z 1 rodzica
+                                            self.__backpack_size - 2)  # wykluczamy wybranie wszystkich genów z 1 rodzica
             for index in range(0, crossing_point):
                 children_a.set_bit(index, parent_a.get_bits()[index])
                 children_b.set_bit(index, parent_b.get_bits()[index])
@@ -59,8 +59,8 @@ class Population:
             children_a = Individual(self.__backpack_size, self.__max_weight)
             children_b = Individual(self.__backpack_size, self.__max_weight)
             while True:
-                number1 = random.randint(1, self.__backpack_size - 1)
-                number2 = random.randint(1, self.__backpack_size - 1)
+                number1 = random.randint(1, self.__backpack_size - 2)
+                number2 = random.randint(1, self.__backpack_size - 2)
                 if number1 != number2 and abs(number1 - number2) > 2:
                     break
             for index in range(0, min(number1, number2)):
@@ -104,12 +104,12 @@ class Population:
     def generate_children(self, crossover_probability, mutation_probability):
         self.__children = []
 
-        for _ in range(self.__size / 2):
+        for _ in range(int(self.__size / 2)): # NA SZYBKO BYLO ROBIONE, nie jest uzyta zadna selekcja
             # Use random.sample to pick two distinct parents
-            parent_indices = random.sample(range(len(self.__parents)), 2)
+            parent_indices = random.sample(range(self.__size), 2)
 
-            parent_a = self.__parents[parent_indices[0]]
-            parent_b = self.__parents[parent_indices[1]]
+            parent_a = self.__individuals[parent_indices[0]]
+            parent_b = self.__individuals[parent_indices[1]]
 
             children_a, children_b = self.single_point_crossing(parent_a, parent_b, crossover_probability)
             self.__children.append(children_a)
