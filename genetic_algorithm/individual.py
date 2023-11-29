@@ -34,11 +34,11 @@ class Individual:
             self.__weight += backpack["items"][index]["weight"] * bit
             self.__cost += backpack["items"][index]["value"] * bit
         if self.__weight > self.__max_weight:
-            self.__weight = 0
-        return self.__weight
+            self.__cost = 0
+        return self.__cost
 
     def set_probability(self, adaptation_sum):
-        self.__probability = self.__weight / adaptation_sum
+        self.__probability = self.__cost/ adaptation_sum
 
     def mutation(self):
         random_bit = random.randint(0, self.__size - 1)
