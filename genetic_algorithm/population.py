@@ -18,11 +18,10 @@ class Population:
             self.backpack = json.load(file)
             self.__backpack_size = len(self.backpack["items"])
 
-    def calculate_adaptation(self, backpack):
+    def calculate_adaptation(self):
         self.__adaptation_sum = 0
         for individual in self.__individuals:
-            self.__adaptation_sum += individual.calculate_adaptation(backpack)
-
+            self.__adaptation_sum += individual.calculate_adaptation()
 
     def set_probability_in_population(self):
         for individual in self.__individuals:
@@ -36,40 +35,38 @@ class Population:
 
     def generate_individuals(self):
         for _ in range(self.__size):
-            self.__individuals.append(Individual(self.__backpack_size, self.__max_weight))
+            self.__individuals.append(Individual(self.__backpack_size, self.__max_weight, self.backpack))
 
     def single_point_crossing(self, parent_a, parent_b):
-            children_a = Individual(self.__backpack_size, self.__max_weight)
-            children_b = Individual(self.__backpack_size, self.__max_weight)
-            crossing_point = random.randint(1,
-                                            self.__backpack_size - 2)  # wykluczamy wybranie wszystkich genów z 1 rodzica
-            # print("Crossing point: ", crossing_point)
-            for index in range(0, crossing_point):
-                children_a.set_bit(index, parent_a.get_bits()[index])
-                children_b.set_bit(index, parent_b.get_bits()[index])
+        children_a = Individual(self.__backpack_size, self.__max_weight, self.backpack)
+        children_b = Individual(self.__backpack_size, self.__max_weight, self.backpack)
+        crossing_point = random.randint(1, self.__backpack_size - 1)
 
-            for index in range(crossing_point, self.__backpack_size):
-                children_a.set_bit(index, parent_b.get_bits()[index])
-                children_b.set_bit(index, parent_a.get_bits()[index])
-            return children_a, children_b
+        for index in range(0, crossing_point):
+            children_a.set_bit(index, parent_a.get_bits()[index])
+            children_b.set_bit(index, parent_b.get_bits()[index])
 
+        for index in range(crossing_point, self.__backpack_size):
+            children_a.set_bit(index, parent_b.get_bits()[index])
+            children_b.set_bit(index, parent_a.get_bits()[index])
+        return children_a, children_b
 
     def two_point_crossing(self, parent_a, parent_b):
 
-        children_a = Individual(self.__backpack_size, self.__max_weight)
-        children_b = Individual(self.__backpack_size, self.__max_weight)
+        children_a = Individual(self.__backpack_size, self.__max_weight, self.backpack)
+        children_b = Individual(self.__backpack_size, self.__max_weight, self.backpack)
         while True:
-            first_crossing_point = random.randint(1, self.__backpack_size - 2)
-            second_crossing_point = random.randint(1, self.__backpack_size - 2)
-            if first_crossing_point != second_crossing_point and abs(first_crossing_point - second_crossing_point) > 2:
+            first_crossing_point = random.randint(1, self.__backpack_size - 1)
+            second_crossing_point = random.randint(1, self.__backpack_size - 1)
+            if first_crossing_point != second_crossing_point and abs(first_crossing_point - second_crossing_point) >= 1:
                 break
-        # print("First crossing point: ", first_crossing_point)
-        # print("Second crossing point: ", second_crossing_point)
+
         for index in range(0, min(first_crossing_point, second_crossing_point)):
             children_a.set_bit(index, parent_a.get_bits()[index])
             children_b.set_bit(index, parent_b.get_bits()[index])
 
-        for index in range(min(first_crossing_point, second_crossing_point), max(first_crossing_point, second_crossing_point)):
+        for index in range(min(first_crossing_point, second_crossing_point),
+                           max(first_crossing_point, second_crossing_point)):
             children_a.set_bit(index, parent_b.get_bits()[index])
             children_b.set_bit(index, parent_a.get_bits()[index])
 
@@ -77,7 +74,6 @@ class Population:
             children_a.set_bit(index, parent_a.get_bits()[index])
             children_b.set_bit(index, parent_b.get_bits()[index])
         return children_a, children_b
-
 
     def mutation(self, mutation_probability):
         for individual in self.__children:
@@ -93,7 +89,7 @@ class Population:
             sections.append([individual, summ, summ + individual.get_probability()])
             summ += individual.get_probability()
 
-        for _ in range(int(self.__size * 0.4)):  # we choose half of the population to be the parents
+        for _ in range(int(self.__size * 0.4)):  # we choose 40% parents by roulette selection
             random_numer = random.uniform(0, 1)
             for section in sections:
                 if section[1] < random_numer <= section[2]:
@@ -104,7 +100,7 @@ class Population:
 
     def elite_selection(self):
         self.__parents = []
-        for _ in range(int(self.__size * 0.1)):
+        for _ in range(int(self.__size * 0.1)):  # we choose 10% parents by elite_selection
             best_individual = self.get_best_individual()
             self.__parents.append(best_individual)
             self.remove_individual(best_individual)
@@ -113,8 +109,7 @@ class Population:
         self.__parents = []
         self.elite_selection()
         self.roulette_selection()
-        self.__individuals = self.__parents
-
+        self.__individuals = self.__parents  # new population is made of selected parents and their children
 
     def generate_children(self, crossover_probability, mutation_probability):
         self.__children = []
@@ -127,7 +122,7 @@ class Population:
             parent_b = self.__parents[parent_indices[1]]
 
             if random.random() < crossover_probability:
-                if random.random() < 0.7:  # USTAWIAM PROPORCJE KRZYZOWANIA
+                if random.random() < 0.7:  # setting single point crossing ratio to two point crossing
                     children_a, children_b = self.single_point_crossing(parent_a, parent_b)
                 else:
                     children_a, children_b = self.two_point_crossing(parent_a, parent_b)
