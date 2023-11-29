@@ -8,8 +8,8 @@ CROSSOVER_PROBABILITY = float(sys.argv[3])
 MUTATION_PROBABILITY = float(sys.argv[4])
 
 best_values = []
-population = Population(POPULATION_SIZE, 6404180)
 for y in range(5):
+    population = Population(POPULATION_SIZE, 6404180)
     best_individual = 0
     population.generate_individuals()
     for x in range(NR_OF_EPOCHS):
