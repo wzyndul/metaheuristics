@@ -15,18 +15,28 @@ for y in range(5):
     for x in range(NR_OF_EPOCHS):
         population.calculate_adaptation()
         best_individual = population.get_best_individual()
-        print(f"Epoch: {x + 1} Best individual weight:"
-              f" {best_individual.get_weight()} Best individual val: {best_individual.get_cost()}")
         population.set_probability_in_population()
         population.choose_parents()
         population.generate_children(CROSSOVER_PROBABILITY, MUTATION_PROBABILITY)
 
     best_values.append(best_individual.get_cost())
 
-plt.plot(list(range(1, 6)), best_values, marker='o')
-plt.xlabel('Run')
-plt.ylabel('Best individual value')
-plt.title('Best individual values for 5 runs')
-plt.xticks(list(range(1,6)))
-plt.grid(True)
+
+mean_value = sum(best_values) / len(best_values)
+for i in range(5):
+    print(f'Run {i + 1}: {best_values[i]}')
+
+print("mean value: ", mean_value)
+
+fig, ax = plt.subplots()
+ax.plot(list(range(1, 6)), best_values, marker='o', label='Best individual')
+ax.axhline(y=mean_value, color='red', linestyle='--', label='Mean value')
+
+ax.set_xlabel('Run')
+ax.set_ylabel('Best individual value')
+ax.set_title('Best individual values for 5 runs')
+ax.set_xticks(list(range(1, 6)))
+ax.grid(True)
+ax.legend()
+
 plt.show()
