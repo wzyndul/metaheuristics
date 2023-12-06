@@ -7,10 +7,7 @@ class Colony:
         self.alpha = alpha
         self.beta = beta
         self.attractions = attractions
-        self.ants = self.spawn_ants()
+        self.ants = [Ant(self.attractions) for i in range(self.nr_ants)]
+        self.pheromones = [[1 for i in range(len(self.attractions))] for j in range(len(self.attractions))]
+        #TODO pamietac, ze to to indeksowane od 0, a atrakcje od id 1
 
-
-    def spawn_ants(self): #TODO mrówka powinna miec losowa atrakcje jako pierwsza (od niej zaczyna)
-        ants = []
-        for i in range(self.nr_ants):
-            ants.append(Ant(self.attractions))

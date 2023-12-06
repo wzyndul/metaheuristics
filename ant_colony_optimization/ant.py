@@ -7,7 +7,6 @@ class Ant:
         self.distance = 0
         self.attractions = attractions
         self.visited = [random.choice(attractions)]
-        self.probability = 0
 
     def calculate_total_distance(self):
         total_distance = 0
@@ -22,7 +21,7 @@ class Ant:
         first_attraction = self.visited[0]
         last_attraction = self.visited[-1]
         total_distance += math.sqrt((last_attraction.x - first_attraction.x) ** 2 +
-                                        (last_attraction.y - first_attraction.y) ** 2)
+                                    (last_attraction.y - first_attraction.y) ** 2)
 
         self.distance = total_distance
 
@@ -31,9 +30,24 @@ class Ant:
         return math.sqrt((attraction.x - current_attraction.x) ** 2 +
                          (attraction.y - current_attraction.y) ** 2)
 
-    def visit(self):
+    def visit_with_probability(self, pheromones, alpha, beta):
         pass
 
+    def visit(self, pheromones, alpha, beta):
+        if random.random() < 0.3:  # probability of visiting random attraction
+            self.visit_random()
+        else:
+            self.visit_with_probability(pheromones, alpha, beta)
+
     def visit_random(self):
-        pass
+        unvisited_attractions = [attraction for attraction in self.attractions if attraction not in self.visited]
+        attraction = random.choice(unvisited_attractions)
+        self.visited.append(attraction)
+
+    def calculate_probabilities(self, pheromones, alpha, beta):
+        current_attraction = self.visited[-1]
+        unvisited_attractions = [attraction for attraction in self.attractions if attraction not in self.visited]
+        probabilities = []
+        sum_denominator = 0
+        numerator = 1
 
