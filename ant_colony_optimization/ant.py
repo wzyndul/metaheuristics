@@ -17,11 +17,11 @@ class Ant:
                                  (next_attraction.y - current_attraction.y) ** 2)
             total_distance += distance
 
-        # Add the distance from the last attraction back to the starting attraction
-        first_attraction = self.visited[0]
-        last_attraction = self.visited[-1]
-        total_distance += math.sqrt((last_attraction.x - first_attraction.x) ** 2 +
-                                    (last_attraction.y - first_attraction.y) ** 2)
+        # z ostatniej atrakcji do 1 nie musimy
+        # first_attraction = self.visited[0]
+        # last_attraction = self.visited[-1]
+        # total_distance += math.sqrt((last_attraction.x - first_attraction.x) ** 2 +
+        #                             (last_attraction.y - first_attraction.y) ** 2)
 
         self.distance = total_distance
 
@@ -31,7 +31,14 @@ class Ant:
                          (attraction.y - current_attraction.y) ** 2)
 
     def visit_with_probability(self, pheromones, alpha, beta):
-        pass
+        unvisited_attractions = self.calculate_probabilities(pheromones, alpha, beta)
+        random_number = random.random()
+        sum_probability = 0
+        for attraction in unvisited_attractions:
+            sum_probability += attraction.probability
+            if sum_probability >= random_number:
+                self.visited.append(attraction)
+                break
 
     def visit(self, pheromones, alpha, beta):
         if random.random() < 0.3:  # probability of visiting random attraction
@@ -45,9 +52,15 @@ class Ant:
         self.visited.append(attraction)
 
     def calculate_probabilities(self, pheromones, alpha, beta):
-        current_attraction = self.visited[-1]
         unvisited_attractions = [attraction for attraction in self.attractions if attraction not in self.visited]
-        probabilities = []
         sum_denominator = 0
-        numerator = 1
+        current_attraction = self.visited[-1]
+        for attraction in unvisited_attractions:
+            sum_denominator += pheromones[current_attraction.id - 1][attraction.id - 1] ** alpha * \
+                               (1 / self.distance_to_attraction(attraction)) ** beta
 
+        for attraction in unvisited_attractions:
+            attraction.probability = (pheromones[current_attraction.id - 1][attraction.id - 1] ** alpha * \
+                                      (1 / self.distance_to_attraction(attraction)) ** beta) / sum_denominator
+
+        return unvisited_attractions

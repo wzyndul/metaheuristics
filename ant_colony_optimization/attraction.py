@@ -3,4 +3,5 @@ class Attraction:
         self.id = attr_id
         self.x = x
         self.y = y
+        self.probability = 0
 
