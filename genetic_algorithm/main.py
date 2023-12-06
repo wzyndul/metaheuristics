@@ -19,7 +19,7 @@ for y in range(5):
         population.choose_parents()
         population.generate_children(CROSSOVER_PROBABILITY, MUTATION_PROBABILITY)
 
-    best_values.append(best_individual.get_cost())
+    best_values.append(best_individual.cost)
 
 
 mean_value = sum(best_values) / len(best_values)

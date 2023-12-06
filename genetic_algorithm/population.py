@@ -28,7 +28,7 @@ class Population:
             individual.set_probability(self.adaptation_sum)
 
     def get_best_individual(self):
-        return max(self.individuals, key=lambda individual: individual.get_cost())
+        return max(self.individuals, key=lambda individual: individual.cost)
 
     def remove_individual(self, individual):
         self.individuals.remove(individual)
@@ -43,12 +43,12 @@ class Population:
         crossing_point = random.randint(1, self.backpack_size - 1)
 
         for index in range(0, crossing_point):
-            children_a.set_bit(index, parent_a.get_bits()[index])
-            children_b.set_bit(index, parent_b.get_bits()[index])
+            children_a.bits[index] = parent_a.bits[index]
+            children_b.bits[index] = parent_b.bits[index]
 
         for index in range(crossing_point, self.backpack_size):
-            children_a.set_bit(index, parent_b.get_bits()[index])
-            children_b.set_bit(index, parent_a.get_bits()[index])
+            children_a.bits[index] = parent_b.bits[index]
+            children_b.bits[index] = parent_a.bits[index]
         return children_a, children_b
 
     def two_point_crossing(self, parent_a, parent_b):
@@ -62,17 +62,17 @@ class Population:
                 break
 
         for index in range(0, min(first_crossing_point, second_crossing_point)):
-            children_a.set_bit(index, parent_a.get_bits()[index])
-            children_b.set_bit(index, parent_b.get_bits()[index])
+            children_a.bits[index] = parent_a.bits[index]
+            children_b.bits[index] = parent_b.bits[index]
 
         for index in range(min(first_crossing_point, second_crossing_point),
                            max(first_crossing_point, second_crossing_point)):
-            children_a.set_bit(index, parent_b.get_bits()[index])
-            children_b.set_bit(index, parent_a.get_bits()[index])
+            children_a.bits[index] = parent_b.bits[index]
+            children_b.bits[index] = parent_a.bits[index]
 
         for index in range(max(first_crossing_point, second_crossing_point), self.backpack_size):
-            children_a.set_bit(index, parent_a.get_bits()[index])
-            children_b.set_bit(index, parent_b.get_bits()[index])
+            children_a.bits[index] = parent_a.bits[index]
+            children_b.bits[index] = parent_b.bits[index]
         return children_a, children_b
 
     def mutation(self, mutation_probability):
@@ -86,8 +86,8 @@ class Population:
 
         # We create sections for each individual in the population
         for index, individual in enumerate(self.individuals):
-            sections.append([individual, summ, summ + individual.get_probability()])
-            summ += individual.get_probability()
+            sections.append([individual, summ, summ + individual.probability])
+            summ += individual.probability
 
         for _ in range(int(self.size * 0.45)):  # we choose 90% parents by roulette selection
             random_numer = random.uniform(0, 1)

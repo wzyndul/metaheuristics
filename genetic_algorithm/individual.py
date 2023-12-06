@@ -15,20 +15,6 @@ class Individual:
             self.bits = [random.choice([0, 1]) for _ in range(self.size)]
             self.calculate_weight()
 
-    def get_bits(self):
-        return self.bits
-
-    def get_probability(self):
-        return self.probability
-
-    def get_weight(self):
-        return self.weight
-
-    def get_cost(self):
-        return self.cost
-
-    def set_bit(self, index, value):
-        self.bits[index] = value
 
     def calculate_adaptation(self):
         self.weight = 0
