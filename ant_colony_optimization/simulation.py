@@ -68,14 +68,14 @@ for round_number in range(5):
         ant_colony.update_pheromones()
         if best_ant is None or ant_colony.find_best_ant().distance < best_ant.distance:
             best_ant = ant_colony.find_best_ant()
-            print(f"Próba {round_number + 1}, Iteracja {i + 1}: Najkrótsza długość trasy: {best_ant.distance}")
+            print(f"Próba {round_number + 1}, Iteracja {i + 1}: Najkrótsza długość ścieżki: {best_ant.distance}")
     print(f"Koniec próby {round_number + 1}")
     best_out_of_five.append(best_ant)
     total_distance += best_ant.distance
 
 average_distance = total_distance / 5
-print(f"Średna długość tras mrówek po 5 próbach: {average_distance}")
+print(f"Średna długość ścieżek najlepszych mrówek z 5 prób: {average_distance}")
 
 overall_best_ant = min(best_out_of_five, key=lambda ant: ant.distance)
 create_movement_graph(overall_best_ant)
-print(f"Najkrótsza długość trasy najlepszej mrówki z 5 prób: {overall_best_ant.distance}")
+print(f"Najkrótsza długość ścieżki najlepszej mrówki z 5 prób: {overall_best_ant.distance}")
