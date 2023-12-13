@@ -49,7 +49,7 @@ def create_movement_graph(ant):
 
 attractions = load_points_from_file(FILE_PATH)
 best_out_of_five = []
-for _ in range(5):
+for round_number in range(5):
     best_ant = None
     for i in range(NR_ITERATIONS):
         ant_colony = Colony(NR_ANTS, ALPHA, BETA, VAPORIZATION_RATE, attractions)
@@ -57,8 +57,10 @@ for _ in range(5):
         ant_colony.update_pheromones()
         if best_ant is None or ant_colony.find_best_ant().distance < best_ant.distance:
             best_ant = ant_colony.find_best_ant()
-            print(best_ant.distance)
+            print(f"Round {round_number + 1}, Iteration {i + 1}: Best ant's distance is {best_ant.distance}")
+    print(f"After round {round_number + 1}, number of ants: {len(ant_colony.ants)}")
     best_out_of_five.append(best_ant)
 
 overall_best_ant = min(best_out_of_five, key=lambda ant: ant.distance)
 create_movement_graph(overall_best_ant)
+print(f"The overall best ant has a distance of {overall_best_ant.distance}")
