@@ -12,5 +12,5 @@ swarm = Swarm(0.5, 1.5, 1.5, 10, booth)
 for _ in range(100):
     swarm.calculate_adaptation()
     swarm.get_best_particle()
-    print(swarm.best_particle.best_adaptation)
+    print(f"best: {swarm.best_particle.best_adaptation}")
     swarm.update_particles()
