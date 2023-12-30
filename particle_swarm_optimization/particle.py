@@ -26,14 +26,14 @@ class Particle:
     def update_velocity(self, global_best_x, global_best_y):
         r1 = random.random()
         r2 = random.random()
-        self.velocity[0] = self.inertia_rate * self.velocity[0] + self.cognitive_constant * r1 * (
-                self.best_x - self.x) + self.social_constant * r2 * (global_best_x - self.x)
-        self.velocity[1] = self.inertia_rate * self.velocity[1] + self.cognitive_constant * r1 * (
-                self.best_y - self.y) + self.social_constant * r2 * (global_best_y - self.y)
-
-        # TODO DYSTANS EUKLIDEOSWY NIE JEST DOBRY BO NIGDY NIE BEDZIE MINUSOWEJ LICZBY
+        self.velocity[0] = self.inertia_rate * self.velocity[
+            0] + self.cognitive_constant * r1 * (
+                                   self.best_x - self.x) + self.social_constant * r2 * (
+                                   global_best_x - self.x)
+        self.velocity[1] = self.inertia_rate * self.velocity[
+            1] + self.cognitive_constant * r1 * (
+                                   self.best_y - self.y) + self.social_constant * r2 * (
+                                   global_best_y - self.y)
 
         self.x += self.velocity[0]
         self.y += self.velocity[1]
-        # print(f"particle adapt: {self.adaptation}")
-        # print(f"particle best adapt: {self.best_adaptation}")
