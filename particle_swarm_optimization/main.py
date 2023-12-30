@@ -49,5 +49,5 @@ plt.show()
 
 min_values = [min(values) for values in best_values_over_iterations]
 
-print(f"Średnie wartości: {sum(min_values) / len(min_values)}")
-print(f"Najlepsze wartości: {min(min_values)}")
+print(f"Średnia wartość: {sum(min_values) / len(min_values)}")
+print(f"Najlepsza wartośc: {min(min_values)}")
