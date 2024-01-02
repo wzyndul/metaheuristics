@@ -53,5 +53,5 @@ min_values = [min(values) for values in best_values_over_iterations]
 
 print(f"Wartość x dla najlepszego rozwiązania: {best_positions_over_iterations[min_values.index(min(min_values))][0]}")
 print(f"Wartość y dla najlepszego rozwiązania: {best_positions_over_iterations[min_values.index(min(min_values))][1]}")
-print(f"Średnia wartość funckcji: {sum(min_values) / len(min_values)}")
-print(f"Najlepsza wartośc funkcji: {min(min_values)}")
+print(f"Średnia wartość funkcji: {sum(min_values) / len(min_values)}")
+print(f"Najlepsza wartość funkcji: {min(min_values)}")
