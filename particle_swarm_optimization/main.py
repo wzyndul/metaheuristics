@@ -19,6 +19,7 @@ def booth(x, y):
 
 
 best_values_over_iterations = []
+best_positions_over_iterations = []
 
 for i in range(5):
     if FUNCTION == "sphere":
@@ -33,6 +34,7 @@ for i in range(5):
         swarm.calculate_adaptation()
         swarm.get_best_particle()
         iteration_values.append(swarm.best_particle.best_adaptation)
+        best_positions_over_iterations.append((swarm.best_particle.best_x, swarm.best_particle.best_y))
         swarm.update_particles()
     best_values_over_iterations.append(iteration_values)
 
@@ -49,5 +51,7 @@ plt.show()
 
 min_values = [min(values) for values in best_values_over_iterations]
 
-print(f"Średnia wartość: {sum(min_values) / len(min_values)}")
-print(f"Najlepsza wartośc: {min(min_values)}")
+print(f"Wartość x dla najlepszego rozwiązania: {best_positions_over_iterations[min_values.index(min(min_values))][0]}")
+print(f"Wartość y dla najlepszego rozwiązania: {best_positions_over_iterations[min_values.index(min(min_values))][1]}")
+print(f"Średnia wartość funckcji: {sum(min_values) / len(min_values)}")
+print(f"Najlepsza wartośc funkcji: {min(min_values)}")
