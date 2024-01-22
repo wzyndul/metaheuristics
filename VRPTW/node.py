@@ -8,4 +8,5 @@ class Node:
         self.due_date = due_date
         self.service_time = service_time
         self.probability = 0
+        self.visited = False
 

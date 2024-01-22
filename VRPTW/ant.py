@@ -3,59 +3,81 @@ import random
 
 
 class Ant:
-    def __init__(self, attractions):
+    def __init__(self, nodes, max_capacity):
         self.distance = 0
-        self.attractions = attractions
-        self.visited = [random.choice(attractions)]
+        self.nodes = nodes
+        self.visited = [nodes[0]]
+        self.capacity = 0
+        self.max_capacity = max_capacity
+        self.reached = False
+        # print("len nodes", len(self.nodes))
+        # print(self.nodes[0].id, self.nodes[0].visited)
+        # print(self.nodes[1].id, self.nodes[1].visited)
 
     def calculate_total_distance(self):
         total_distance = 0
         for i in range(len(self.visited) - 1):
-            current_attraction = self.visited[i]
-            next_attraction = self.visited[i + 1]
-            distance = math.sqrt((next_attraction.x - current_attraction.x) ** 2 +
-                                 (next_attraction.y - current_attraction.y) ** 2)
+            current_node = self.visited[i]
+            next_node = self.visited[i + 1]
+            distance = math.sqrt((next_node.x - current_node.x) ** 2 +
+                                 (next_node.y - current_node.y) ** 2)
             total_distance += distance
 
+        self.distance = total_distance # I added as last item depot
 
-        self.distance = total_distance
-
-    def distance_to_attraction(self, attraction):
-        current_attraction = self.visited[-1]
-        return math.sqrt((attraction.x - current_attraction.x) ** 2 +
-                         (attraction.y - current_attraction.y) ** 2)
+    def distance_to_node(self, node):
+        current_node = self.visited[-1]
+        return math.sqrt((node.x - current_node.x) ** 2 +
+                         (node.y - current_node.y) ** 2)
 
     def visit_with_probability(self, pheromones, alpha, beta):
-        unvisited_attractions = self.calculate_probabilities(pheromones, alpha, beta)
+        unvisited_nodes = self.calculate_probabilities(pheromones, alpha, beta)
+        if len(unvisited_nodes) == 0:
+            self.visited.append(self.nodes[0])
+            self.reached = True
         random_number = random.random()
         sum_probability = 0
-        for attraction in unvisited_attractions:
-            sum_probability += attraction.probability
+        for node in unvisited_nodes:
+            sum_probability += node.probability
             if sum_probability >= random_number:
-                self.visited.append(attraction)
+                self.visited.append(node)
+                self.capacity += node.demand
+                self.nodes[node.id - 1].visited = True
                 break
 
     def visit(self, pheromones, alpha, beta):
-        if random.random() < 0.3:  # probability of visiting random attraction
+        if random.random() < 0.3:  # probability of visiting random node
             self.visit_random()
         else:
             self.visit_with_probability(pheromones, alpha, beta)
+        return self.reached
 
     def visit_random(self):
-        unvisited_attractions = [attraction for attraction in self.attractions if attraction not in self.visited]
-        attraction = random.choice(unvisited_attractions)
-        self.visited.append(attraction)
+        unvisited_nodes = [node for node in self.nodes if
+                           node.visited != True and self.capacity + node.demand <= self.max_capacity]
+
+        if len(unvisited_nodes) == 0:
+            self.visited.append(self.nodes[0])
+            self.reached = True
+            return
+        node = random.choice(unvisited_nodes)
+        self.visited.append(node)
+        self.capacity += node.demand
+        self.nodes[node.id - 1].visited = True
 
     def calculate_probabilities(self, pheromones, alpha, beta):
-        unvisited_attractions = [attraction for attraction in self.attractions if attraction not in self.visited]
+        unvisited_nodes = [node for node in self.nodes if
+                           node.visited != True and self.capacity + node.demand <= self.max_capacity]
+
         sum_denominator = 0
-        current_attraction = self.visited[-1]
-        for attraction in unvisited_attractions:
-            sum_denominator += pheromones[current_attraction.id - 1][attraction.id - 1] ** alpha * \
-                               (1 / self.distance_to_attraction(attraction)) ** beta
+        current_node = self.visited[-1]
 
-        for attraction in unvisited_attractions:
-            attraction.probability = (pheromones[current_attraction.id - 1][attraction.id - 1] ** alpha * \
-                                      (1 / self.distance_to_attraction(attraction)) ** beta) / sum_denominator
+        for node in unvisited_nodes:
+            sum_denominator += pheromones[current_node.id - 1][node.id - 1] ** alpha * \
+                               (1 / self.distance_to_node(node)) ** beta
 
-        return unvisited_attractions
+        for node in unvisited_nodes:
+            node.probability = (pheromones[current_node.id - 1][node.id - 1] ** alpha * \
+                                      (1 / self.distance_to_node(node)) ** beta) / sum_denominator
+        return unvisited_nodes
+
