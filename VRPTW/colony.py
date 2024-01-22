@@ -17,17 +17,17 @@ class Colony:
     def update_pheromones(self):
         for i in range(len(self.pheromones)):
             for j in range(len(self.pheromones[i])):
-                self.pheromones[i][j] = self.pheromones[i][j] * self.vaporization_rate
+                self.pheromones[i][j] *= (1 - self.vaporization_rate)
         for ant in self.ants:
             ant.calculate_total_distance()
+            pheromone_deposit = 1 / ant.distance
             for i in range(len(ant.visited) - 1):
                 current_node = ant.visited[i]
                 next_node = ant.visited[i + 1]
-                self.pheromones[current_node.id - 1][next_node.id - 1] += 1 / ant.distance
+                self.pheromones[current_node.id - 1][next_node.id - 1] += pheromone_deposit
 
     def move_ants(self):
         for ant in self.ants:
-            not_visited = [node for node in self.nodes if not node.visited]
             while not ant.visit(self.pheromones, self.alpha, self.beta):
                 pass
 

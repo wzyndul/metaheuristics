@@ -10,9 +10,7 @@ class Ant:
         self.capacity = 0
         self.max_capacity = max_capacity
         self.reached = False
-        # print("len nodes", len(self.nodes))
-        # print(self.nodes[0].id, self.nodes[0].visited)
-        # print(self.nodes[1].id, self.nodes[1].visited)
+        self.time = 0
 
     def calculate_total_distance(self):
         total_distance = 0
@@ -46,7 +44,7 @@ class Ant:
                 break
 
     def visit(self, pheromones, alpha, beta):
-        if random.random() < 0.3:  # probability of visiting random node
+        if random.random() < 0.05:  # probability of visiting random node
             self.visit_random()
         else:
             self.visit_with_probability(pheromones, alpha, beta)

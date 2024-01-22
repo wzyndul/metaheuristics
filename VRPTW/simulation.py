@@ -1,4 +1,5 @@
 import copy
+import math
 import sys
 from colony import Colony
 import pandas as pd
@@ -27,12 +28,12 @@ def load_points_from_file(file_path):
     nodes = []
     for index, row in df.iterrows():
         nodes.append(
-            Node(int(row['id']), int(row['x']), int(row['y']), int(row['demand']), int(row['ready_time']), int(row['due_time']), int(row['service_time'])))
+            Node(int(row['id']), int(row['x']), int(row['y']), int(row['demand']), int(row['ready_time']),
+                 int(row['due_time']), int(row['service_time'])))
     return nodes
 
 
 nodes = load_points_from_file(FILE_PATH)
-
 
 # x = []
 # y = []
@@ -49,23 +50,29 @@ for i in range(NR_ITERATIONS):
     ant_colony.update_pheromones()
 
     # Create a new plot for each iteration
-    if i == 1:
-        plt.figure()
-
+    # if i == 1 or i == 10 or i == 50 or i == 99:
+    if True:
+        # plt.figure()
+        whole_distance = 0
         for ant_index, ant in enumerate(ant_colony.ants):
             x = []
             y = []
-            table = []
+            total_distance = 0
             for node in ant.visited:
-                table.append(node.id)
                 x.append(node.x)
                 y.append(node.y)
-            print("ant", ant_index + 1)
-            print(table)
-            print("length", len(table))
-            # Plot the path of the current ant with a different color
+
+            for j in range(len(ant.visited) - 1):
+                current_node = ant.visited[j]
+                next_node = ant.visited[j + 1]
+                distance = math.sqrt((next_node.x - current_node.x) ** 2 +
+                                     (next_node.y - current_node.y) ** 2)
+                total_distance += distance
+
+            whole_distance += total_distance
             plt.scatter(x, y, label=f'Ant {ant_index + 1}', color=COLORS[ant_index])
 
-        plt.legend()
-        plt.title(f'Iteration {i + 1}')
-        plt.show()
+        print(f'Iteration {i + 1}: {whole_distance}')
+        # plt.legend()
+        # plt.title(f'Iteration {i + 1}')
+        # plt.show()
