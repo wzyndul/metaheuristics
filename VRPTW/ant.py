@@ -7,75 +7,83 @@ class Ant:
         self.distance = 0
         self.nodes = nodes
         self.visited = [nodes[0]]
+        self.nodes[0].visited = True
         self.capacity = 0
         self.max_capacity = max_capacity
-        self.reached = False
         self.time = 0
+        self.unvisited = None
+        self.next_node = None
+        self.vehicles = 0
 
     def calculate_total_distance(self):
         total_distance = 0
         for i in range(len(self.visited) - 1):
-            current_node = self.visited[i]
-            next_node = self.visited[i + 1]
-            distance = math.sqrt((next_node.x - current_node.x) ** 2 +
-                                 (next_node.y - current_node.y) ** 2)
-            total_distance += distance
+            total_distance += math.sqrt((self.visited[i].x - self.visited[i + 1].x) ** 2 +
+                                        (self.visited[i].y - self.visited[i + 1].y) ** 2)
+        self.distance = total_distance
 
-        self.distance = total_distance # I added as last item depot
 
     def distance_to_node(self, node):
         current_node = self.visited[-1]
         return math.sqrt((node.x - current_node.x) ** 2 +
                          (node.y - current_node.y) ** 2)
 
-    def visit_with_probability(self, pheromones, alpha, beta):
-        unvisited_nodes = self.calculate_probabilities(pheromones, alpha, beta)
-        if len(unvisited_nodes) == 0:
-            self.visited.append(self.nodes[0])
-            self.reached = True
-        random_number = random.random()
-        sum_probability = 0
-        for node in unvisited_nodes:
-            sum_probability += node.probability
-            if sum_probability >= random_number:
-                self.visited.append(node)
-                self.capacity += node.demand
-                self.nodes[node.id - 1].visited = True
-                break
-
-    def visit(self, pheromones, alpha, beta):
-        if random.random() < 0.05:  # probability of visiting random node
-            self.visit_random()
-        else:
-            self.visit_with_probability(pheromones, alpha, beta)
-        return self.reached
-
-    def visit_random(self):
-        unvisited_nodes = [node for node in self.nodes if
-                           node.visited != True and self.capacity + node.demand <= self.max_capacity]
-
-        if len(unvisited_nodes) == 0:
-            self.visited.append(self.nodes[0])
-            self.reached = True
-            return
-        node = random.choice(unvisited_nodes)
-        self.visited.append(node)
-        self.capacity += node.demand
-        self.nodes[node.id - 1].visited = True
+    def possible_to_visit(self):
+        self.unvisited = [node for node in self.nodes if
+                          node.visited != True and self.capacity + node.demand <= self.max_capacity and
+                          self.time <= node.due_date]
+        # na razie ograniczenie bez czasu dojazdu wliczonego - zakaldam ze dojazd jest zerowy
 
     def calculate_probabilities(self, pheromones, alpha, beta):
-        unvisited_nodes = [node for node in self.nodes if
-                           node.visited != True and self.capacity + node.demand <= self.max_capacity]
-
         sum_denominator = 0
         current_node = self.visited[-1]
 
-        for node in unvisited_nodes:
+        for node in self.unvisited:
             sum_denominator += pheromones[current_node.id - 1][node.id - 1] ** alpha * \
                                (1 / self.distance_to_node(node)) ** beta
 
-        for node in unvisited_nodes:
+        for node in self.unvisited:
             node.probability = (pheromones[current_node.id - 1][node.id - 1] ** alpha * \
-                                      (1 / self.distance_to_node(node)) ** beta) / sum_denominator
-        return unvisited_nodes
+                                (1 / self.distance_to_node(node)) ** beta) / sum_denominator
 
+    def visit(self, pheromones, alpha, beta):
+        while len([node for node in self.nodes if node.visited != True]) > 0:
+            self.possible_to_visit()
+            if len(self.unvisited) == 0:
+                self.next_node = self.nodes[0]
+                self.time = 0
+                self.capacity = 0
+            else:
+                if random.random() < 0.05:  # probability of visiting random node
+                    self.next_node = random.choice(self.unvisited)
+                else:
+                    self.calculate_probabilities(pheromones, alpha, beta)
+                    random_number = random.random()
+                    sum_probability = 0
+                    for node in self.unvisited:
+                        sum_probability += node.probability
+                        if sum_probability >= random_number:
+                            self.next_node = node
+                            break
+            self.visited.append(self.next_node)
+            self.next_node.visited = True
+            self.capacity += self.next_node.demand
+            if self.next_node.ready_time > self.time:
+                self.time = self.next_node.ready_time
+            self.time += self.next_node.service_time
+            if self.next_node == self.nodes[0]:
+                self.vehicles += 1
+
+    def get_routes(self):
+        routes = []
+        base = 0
+        for i in range(1, len(self.visited)):
+            if self.visited[i].id == 1:
+                route = (self.visited[base:i + 1])
+                table = []
+                for node in route:
+                    table.append(node.id)
+                routes.append(table)
+                base = i
+
+        return routes

@@ -9,8 +9,7 @@ class Colony:
         self.beta = beta
         self.max_capacity = max_capacity
         self.nodes = nodes
-        self.nodes[0].visited = True
-        self.ants = [Ant(self.nodes, self.max_capacity) for _ in range(self.nr_ants)]
+        self.ants = [Ant(copy.deepcopy(self.nodes), self.max_capacity) for _ in range(self.nr_ants)]
         self.pheromones = [[1 for _ in range(len(self.nodes))] for _ in range(len(self.nodes))]
         self.vaporization_rate = vaporization_rate
 
@@ -28,6 +27,12 @@ class Colony:
 
     def move_ants(self):
         for ant in self.ants:
-            while not ant.visit(self.pheromones, self.alpha, self.beta):
-                pass
+            ant.visit(self.pheromones, self.alpha, self.beta)
 
+
+    def get_best_solution(self):
+        best_ant = self.ants[0]
+        for ant in self.ants:
+            if ant.distance < best_ant.distance:
+                best_ant = ant
+        return best_ant
