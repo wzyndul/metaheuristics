@@ -12,11 +12,11 @@ from node import Node
 # R2, RC2: 1000
 # C2: 700
 
-NR_ANTS = 1
+NR_ANTS = 30
 ALPHA = 1
-BETA = 1
-NR_ITERATIONS = 1
-VAPORIZATION_RATE = 0.5
+BETA = 2
+NR_ITERATIONS = 1000
+VAPORIZATION_RATE = 0.25
 FILE_PATH = "data/C1/C101.csv"
 
 
@@ -44,33 +44,22 @@ nodes = load_points_from_file(FILE_PATH)
 # plt.show()
 COLORS = ['red', 'blue', 'green', 'orange', 'purple', 'pink', 'yellow', 'black', 'brown', 'gray']
 
+all_time_best_solution = None
 for i in range(NR_ITERATIONS):
     ant_colony = Colony(NR_ANTS, ALPHA, BETA, VAPORIZATION_RATE, copy.deepcopy(nodes), 200)
     ant_colony.move_ants()
     ant_colony.update_pheromones()
 
-    # Create a new plot for each iteration
-    # if i == 1 or i == 10 or i == 50 or i == 99:
-    if True:
-        # plt.figure()
-
-        for ant_index, ant in enumerate(ant_colony.ants):
-            x = []
-            y = []
-            total_distance = 0
-            for node in ant.visited:
-                x.append(node.x)
-                y.append(node.y)
+    colony_best_solution = ant_colony.get_best_solution()
+    routes = colony_best_solution.get_routes()
+    # print(routes)
+    # print(f'Iteration {i + 1}: {colony_best_solution.distance}')
+    # print(f'Number of vehicles: {colony_best_solution.vehicles}')
+    if all_time_best_solution is None or colony_best_solution.distance < all_time_best_solution.distance:
+        all_time_best_solution = colony_best_solution
+        print(f"iteration: {i}")
+        print(f"New best solution: {all_time_best_solution.distance}")
+        print(f'Number of vehicles: {all_time_best_solution.vehicles}')
 
 
-            plt.scatter(x, y, label=f'Ant {ant_index + 1}', color=COLORS[ant_index])
-
-        colony_best_solution = ant_colony.get_best_solution()
-        routes = colony_best_solution.get_routes()
-        print(routes)
-        print(f'Iteration {i + 1}: {colony_best_solution.distance}')
-
-        # plt.legend()
-        # plt.title(f'Iteration {i + 1}')
-        # plt.show()
 

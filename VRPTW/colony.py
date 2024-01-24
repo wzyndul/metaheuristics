@@ -10,7 +10,7 @@ class Colony:
         self.max_capacity = max_capacity
         self.nodes = nodes
         self.ants = [Ant(copy.deepcopy(self.nodes), self.max_capacity) for _ in range(self.nr_ants)]
-        self.pheromones = [[1 for _ in range(len(self.nodes))] for _ in range(len(self.nodes))]
+        self.pheromones = [[0.01 for _ in range(len(self.nodes))] for _ in range(len(self.nodes))]
         self.vaporization_rate = vaporization_rate
 
     def update_pheromones(self):

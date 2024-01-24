@@ -31,7 +31,7 @@ class Ant:
     def possible_to_visit(self):
         self.unvisited = [node for node in self.nodes if
                           node.visited != True and self.capacity + node.demand <= self.max_capacity and
-                          self.time <= node.due_date]
+                          self.time + self.distance_to_node(node) <= node.due_date]
         # na razie ograniczenie bez czasu dojazdu wliczonego - zakaldam ze dojazd jest zerowy
 
     def calculate_probabilities(self, pheromones, alpha, beta):
@@ -82,7 +82,7 @@ class Ant:
                 route = (self.visited[base:i + 1])
                 table = []
                 for node in route:
-                    table.append(node.id)
+                    table.append(node)
                 routes.append(table)
                 base = i
 
