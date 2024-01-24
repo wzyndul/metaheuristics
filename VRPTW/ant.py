@@ -22,16 +22,23 @@ class Ant:
                                         (self.visited[i].y - self.visited[i + 1].y) ** 2)
         self.distance = total_distance
 
-
-    def distance_to_node(self, node):
+    def distance_heuristic(self, node):
         current_node = self.visited[-1]
         return math.sqrt((node.x - current_node.x) ** 2 +
                          (node.y - current_node.y) ** 2)
 
+    def time_window_heuristic(self, node):
+        return (node.due_date - self.time) #* 0.5 # dodałem, zeby jeszcze zwiekszyc wartosc
+
+    def waiting_time_heuristic(self, node):
+        arrival_time = self.time + self.distance_heuristic(node)
+        waiting_time = node.ready_time - arrival_time
+        return waiting_time * 0.5
+
     def possible_to_visit(self):
         self.unvisited = [node for node in self.nodes if
                           node.visited != True and self.capacity + node.demand <= self.max_capacity and
-                          self.time + self.distance_to_node(node) <= node.due_date]
+                          self.time + self.distance_heuristic(node) <= node.due_date]
         # na razie ograniczenie bez czasu dojazdu wliczonego - zakaldam ze dojazd jest zerowy
 
     def calculate_probabilities(self, pheromones, alpha, beta):
@@ -40,11 +47,12 @@ class Ant:
 
         for node in self.unvisited:
             sum_denominator += pheromones[current_node.id - 1][node.id - 1] ** alpha * \
-                               (1 / self.distance_to_node(node)) ** beta
+                               (1 / (self.distance_heuristic(node) + self.time_window_heuristic(node) + self.waiting_time_heuristic(node))) ** beta
 
         for node in self.unvisited:
             node.probability = (pheromones[current_node.id - 1][node.id - 1] ** alpha * \
-                                (1 / self.distance_to_node(node)) ** beta) / sum_denominator
+                                (1 / (self.distance_heuristic(node) + self.time_window_heuristic(
+                                    node) + self.waiting_time_heuristic(node))) ** beta) / sum_denominator
 
     def visit(self, pheromones, alpha, beta):
         while len([node for node in self.nodes if node.visited != True]) > 0:
