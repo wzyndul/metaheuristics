@@ -20,7 +20,7 @@ VAPORIZATION_RATE = 0.15
 FILE_PATH1 = "data/C1/C101.csv"
 FILE_PATH2 = "data/C2/C204.csv"
 FILE_PATH3 = "data/R1/R104.csv"
-FILE_PATH4 = "data/R2/R208.csv"
+FILE_PATH4 = "data/R2/R210.csv"
 FILE_PATH5 = "data/RC1/RC104.csv"
 FILE_PATH6 = "data/RC2/RC201.csv"
 

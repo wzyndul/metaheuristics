@@ -18,8 +18,9 @@ class Ant:
     def calculate_total_distance(self):
         total_distance = 0
         for i in range(len(self.visited) - 1):
-            total_distance += math.sqrt((self.visited[i].x - self.visited[i + 1].x) ** 2 +
-                                        (self.visited[i].y - self.visited[i + 1].y) ** 2)
+            total_distance += math.sqrt(
+                (self.visited[i].x - self.visited[i + 1].x) ** 2 +
+                (self.visited[i].y - self.visited[i + 1].y) ** 2)
         self.distance = total_distance
 
     def distance_heuristic(self, node):
@@ -34,8 +35,11 @@ class Ant:
 
     def possible_to_visit(self):
         self.unvisited = [node for node in self.nodes if
-                          node.visited != True and self.capacity + node.demand <= self.max_capacity and
-                          self.time + self.distance_heuristic(node) <= node.due_date]
+                          node.visited != True and self.capacity
+                          + node.demand <= self.max_capacity and
+                          self.time + self.distance_heuristic(node)
+                          <= node.due_date and self.time + self.distance_heuristic(node) * 2 + node.service_time <=
+                          self.nodes[0].due_date]
 
     def calculate_probabilities(self, pheromones, alpha, beta):
         sum_denominator = 0
@@ -49,7 +53,6 @@ class Ant:
             node.probability = (pheromones[current_node.id - 1][node.id - 1] ** alpha * \
                                 (1 / (self.distance_heuristic(node) + self.waiting_time_heuristic(
                                     node))) ** beta) / sum_denominator
-
 
     def visit(self, pheromones, alpha, beta):
         while len([node for node in self.nodes if node.visited != True]) > 0:
@@ -70,9 +73,11 @@ class Ant:
                         if sum_probability >= random_number:
                             self.next_node = node
                             break
+            self.time += self.distance_heuristic(self.next_node)
             self.visited.append(self.next_node)
             self.next_node.visited = True
             self.capacity += self.next_node.demand
+
             if self.next_node.ready_time > self.time:
                 self.time = self.next_node.ready_time
             self.time += self.next_node.service_time
