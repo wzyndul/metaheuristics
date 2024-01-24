@@ -30,13 +30,12 @@ class Ant:
     def waiting_time_heuristic(self, node):
         arrival_time = self.time + self.distance_heuristic(node)
         waiting_time = max(0, node.ready_time - arrival_time)
-        return waiting_time * 0.5
+        return waiting_time
 
     def possible_to_visit(self):
         self.unvisited = [node for node in self.nodes if
                           node.visited != True and self.capacity + node.demand <= self.max_capacity and
                           self.time + self.distance_heuristic(node) <= node.due_date]
-        # na razie ograniczenie bez czasu dojazdu wliczonego - zakaldam ze dojazd jest zerowy
 
     def calculate_probabilities(self, pheromones, alpha, beta):
         sum_denominator = 0
@@ -48,7 +47,9 @@ class Ant:
 
         for node in self.unvisited:
             node.probability = (pheromones[current_node.id - 1][node.id - 1] ** alpha * \
-                                (1 / (self.distance_heuristic(node)  + self.waiting_time_heuristic(node))) ** beta) / sum_denominator
+                                (1 / (self.distance_heuristic(node) + self.waiting_time_heuristic(
+                                    node))) ** beta) / sum_denominator
+
 
     def visit(self, pheromones, alpha, beta):
         while len([node for node in self.nodes if node.visited != True]) > 0:
@@ -58,7 +59,7 @@ class Ant:
                 self.time = 0
                 self.capacity = 0
             else:
-                if random.random() < 0.05:  # probability of visiting random node
+                if random.random() < 0.05:
                     self.next_node = random.choice(self.unvisited)
                 else:
                     self.calculate_probabilities(pheromones, alpha, beta)
