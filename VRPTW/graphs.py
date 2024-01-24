@@ -4,7 +4,7 @@ import networkx as nx
 
 from node import Node
 
-FILE_PATH = "data/RC2/RC208.csv"
+FILE_PATH = "data/C2/C204.csv"
 
 
 def load_points_from_file(file_path):

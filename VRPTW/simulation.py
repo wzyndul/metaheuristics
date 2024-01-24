@@ -1,10 +1,7 @@
 import copy
-import math
-import sys
 from colony import Colony
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from node import Node
 
 # vehicle capacity:
@@ -13,18 +10,12 @@ from node import Node
 # C2: 700
 
 NR_ANTS = 30
-ALPHA = 1
-BETA = 2
+ALPHA = 0.5
+BETA = 3
 NR_ITERATIONS = 100
-VAPORIZATION_RATE = 0.15
-FILE_PATH1 = "data/C1/C101.csv"
-FILE_PATH2 = "data/C2/C204.csv"
-FILE_PATH3 = "data/R1/R104.csv"
-FILE_PATH4 = "data/R2/R210.csv"
-FILE_PATH5 = "data/RC1/RC104.csv"
-FILE_PATH6 = "data/RC2/RC201.csv"
-
-paths = [FILE_PATH1, FILE_PATH2, FILE_PATH3, FILE_PATH4, FILE_PATH5, FILE_PATH6]
+VAPORIZATION_RATE = 0.1
+FILE_PATH = "data/C1/C101.csv"
+CAPACITY = 200
 
 
 # FIRST NODE IS DEPOT
@@ -40,17 +31,22 @@ def load_points_from_file(file_path):
     return nodes
 
 
-for path in paths:
-    all_time_best_solution = None
-    nodes = load_points_from_file(path)
+best_solutions = []
+for x in range(5):
+    best_in_iteration = None
+    nodes = load_points_from_file(FILE_PATH)
     for i in range(NR_ITERATIONS):
-        ant_colony = Colony(NR_ANTS, ALPHA, BETA, VAPORIZATION_RATE, copy.deepcopy(nodes), 200)
+        ant_colony = Colony(NR_ANTS, ALPHA, BETA, VAPORIZATION_RATE, copy.deepcopy(nodes), CAPACITY)
         ant_colony.move_ants()
         ant_colony.update_pheromones()
 
         colony_best_solution = ant_colony.get_best_solution()
-        routes = colony_best_solution.get_routes()
-        if all_time_best_solution is None or colony_best_solution.distance < all_time_best_solution.distance:
-            all_time_best_solution = colony_best_solution
 
-    print("Best solution for file " + path + " is: " + str(all_time_best_solution.distance))
+        if best_in_iteration is None or colony_best_solution.distance < best_in_iteration.distance:
+            best_in_iteration = colony_best_solution
+    best_solutions.append(best_in_iteration)
+
+best_all_time = min(best_solutions, key=lambda x: x.distance)
+print("Best solution: " + str(best_all_time.distance))
+print("Average solution: " + str(np.mean([x.distance for x in best_solutions])))
+print(f"Vehicle number in best solution: {best_all_time.vehicles}")

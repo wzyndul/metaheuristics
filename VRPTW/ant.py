@@ -33,13 +33,18 @@ class Ant:
         waiting_time = max(0, node.ready_time - arrival_time)
         return waiting_time
 
+    def distance_to_depot(self, node):
+
+        return math.sqrt((node.x - self.nodes[0].x) ** 2 +
+                         (node.y - self.nodes[0].y) ** 2)
+
     def possible_to_visit(self):
         self.unvisited = [node for node in self.nodes if
                           node.visited != True and self.capacity
                           + node.demand <= self.max_capacity and
                           self.time + self.distance_heuristic(node)
-                          <= node.due_date and self.time + self.distance_heuristic(node) * 2 + node.service_time <=
-                          self.nodes[0].due_date]
+                          <= node.due_date and self.time + self.distance_heuristic(node)
+                          + self.distance_to_depot(node) + node.service_time <= self.nodes[0].due_date]
 
     def calculate_probabilities(self, pheromones, alpha, beta):
         sum_denominator = 0
