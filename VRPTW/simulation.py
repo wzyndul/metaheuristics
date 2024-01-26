@@ -1,4 +1,7 @@
 import copy
+
+from matplotlib import pyplot as plt
+
 from colony import Colony
 import pandas as pd
 import numpy as np
@@ -14,7 +17,7 @@ ALPHA = 0.5
 BETA = 3
 NR_ITERATIONS = 100
 VAPORIZATION_RATE = 0.1
-FILE_PATH = "data/C1/C101.csv"
+FILE_PATH = "data/R1/R101.csv"
 CAPACITY = 200
 
 
@@ -29,6 +32,23 @@ def load_points_from_file(file_path):
             Node(int(row['id']), int(row['x']), int(row['y']), int(row['demand']), int(row['ready_time']),
                  int(row['due_time']), int(row['service_time'])))
     return nodes
+
+
+def plot_routes(routes):
+    for i, route in enumerate(routes):
+        x = [node.x for node in route]
+        y = [node.y for node in route]
+
+        plt.plot(x[1:], y[1:], marker='o', label=f'Route {i + 1}')
+
+    plt.plot(x[0], y[0], marker='s', markersize=8, color='black', label='Depot')
+
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.title('Vehicle Routes')
+    plt.legend()
+
+    plt.show()
 
 
 best_solutions = []
@@ -47,6 +67,10 @@ for x in range(5):
     best_solutions.append(best_in_iteration)
 
 best_all_time = min(best_solutions, key=lambda x: x.distance)
+routes = best_all_time.get_routes()
 print("Best solution: " + str(best_all_time.distance))
 print("Average solution: " + str(np.mean([x.distance for x in best_solutions])))
 print(f"Vehicle number in best solution: {best_all_time.vehicles}")
+
+# plot routes for best solution
+plot_routes(routes)
