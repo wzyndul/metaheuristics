@@ -1,10 +1,7 @@
 import copy
-import math
-import sys
 from colony import Colony
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from node import Node
 
 # vehicle capacity:
@@ -12,12 +9,13 @@ from node import Node
 # R2, RC2: 1000
 # C2: 700
 
-NR_ANTS = 10
-ALPHA = 1
-BETA = 1
+NR_ANTS = 30
+ALPHA = 0.5
+BETA = 3
 NR_ITERATIONS = 100
-VAPORIZATION_RATE = 0.5
+VAPORIZATION_RATE = 0.1
 FILE_PATH = "data/C1/C101.csv"
+CAPACITY = 200
 
 
 # FIRST NODE IS DEPOT
@@ -33,46 +31,22 @@ def load_points_from_file(file_path):
     return nodes
 
 
-nodes = load_points_from_file(FILE_PATH)
+best_solutions = []
+for x in range(5):
+    best_in_iteration = None
+    nodes = load_points_from_file(FILE_PATH)
+    for i in range(NR_ITERATIONS):
+        ant_colony = Colony(NR_ANTS, ALPHA, BETA, VAPORIZATION_RATE, copy.deepcopy(nodes), CAPACITY)
+        ant_colony.move_ants()
+        ant_colony.update_pheromones()
 
-# x = []
-# y = []
-# for node in nodes:
-#     x.append(node.x)
-#     y.append(node.y)
-# plt.scatter(x, y)
-# plt.show()
-COLORS = ['red', 'blue', 'green', 'orange', 'purple', 'pink', 'yellow', 'black', 'brown', 'gray']
+        colony_best_solution = ant_colony.get_best_solution()
 
-for i in range(NR_ITERATIONS):
-    ant_colony = Colony(NR_ANTS, ALPHA, BETA, VAPORIZATION_RATE, copy.deepcopy(nodes), 200)
-    ant_colony.move_ants()
-    ant_colony.update_pheromones()
+        if best_in_iteration is None or colony_best_solution.distance < best_in_iteration.distance:
+            best_in_iteration = colony_best_solution
+    best_solutions.append(best_in_iteration)
 
-    # Create a new plot for each iteration
-    # if i == 1 or i == 10 or i == 50 or i == 99:
-    if True:
-        # plt.figure()
-        whole_distance = 0
-        for ant_index, ant in enumerate(ant_colony.ants):
-            x = []
-            y = []
-            total_distance = 0
-            for node in ant.visited:
-                x.append(node.x)
-                y.append(node.y)
-
-            for j in range(len(ant.visited) - 1):
-                current_node = ant.visited[j]
-                next_node = ant.visited[j + 1]
-                distance = math.sqrt((next_node.x - current_node.x) ** 2 +
-                                     (next_node.y - current_node.y) ** 2)
-                total_distance += distance
-
-            whole_distance += total_distance
-            plt.scatter(x, y, label=f'Ant {ant_index + 1}', color=COLORS[ant_index])
-
-        print(f'Iteration {i + 1}: {whole_distance}')
-        # plt.legend()
-        # plt.title(f'Iteration {i + 1}')
-        # plt.show()
+best_all_time = min(best_solutions, key=lambda x: x.distance)
+print("Best solution: " + str(best_all_time.distance))
+print("Average solution: " + str(np.mean([x.distance for x in best_solutions])))
+print(f"Vehicle number in best solution: {best_all_time.vehicles}")
